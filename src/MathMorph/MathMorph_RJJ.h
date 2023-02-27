@@ -3,7 +3,6 @@
 #include<sstream>
 #include<math.h>
 #include<vector>
-#include<cstddef>
 
 #ifndef MathMorph_RJJ
 
@@ -54,7 +53,7 @@ void HeapSort_index(int n, T_data ra[], T_index indices[]){
 
   int i,ir,j,l;
   T_data rra;
-  T_index rraindex;
+  int rraindex;
 
   if (n<2) return;
   l = (n >> 1) + 1;
@@ -284,10 +283,6 @@ int Populate_temp_array(data_type * temp_vals, data_type * data_vals, int i, int
   return used;
 
 }
-
-void Populate_temp_XtoI_array(size_t * temp_vals, int i, int j, int k, int size_x, int size_y, int size_z, int sradius, int fradius, int round_flag);
-
-void Populate_temp_ItoX_array(size_t * temp_vals, int i, int j, int k, int size_x, int size_y, int size_z, int sradius, int fradius, int round_flag);
 
 template <typename data_type>
 data_type Temp_array_min(data_type * temp_vals, data_type * data_vals, int i, int j, int k, int size_x, int size_y, int size_z, int used){
@@ -1268,16 +1263,13 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
   data_type * buffer_vals, * temp_vals;
   float sep, sep_max, progress;
   int i,j,k,s,bdepth,used,NOvals;
-  size_t * temp_XtoI_pos, * temp_ItoX_pos;
-
+  
   // create temp array to sort
-  temp_XtoI_pos = new size_t[((2*sradius) + 1)*((2*sradius) + 1)*((2*fradius) + 1)];
   if(round_flag < 0){
     
     NOvals = ((2*sradius) + 1)*((2*sradius) + 1)*((2*fradius) + 1);
     temp_vals = new data_type[NOvals];
-    temp_ItoX_pos = new size_t[NOvals];
-
+    
   } else if(round_flag == 0){
 
     NOvals = 0;
@@ -1297,7 +1289,6 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
 
     NOvals*=((2*fradius) + 1);
     temp_vals = new data_type[NOvals];
-    temp_ItoX_pos = new size_t[NOvals];
 
   } else {
     
@@ -1406,10 +1397,9 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
     }
 
     temp_vals = new data_type[NOvals];
-    temp_ItoX_pos = new size_t[NOvals];
     
   }
-  if(vb_flag > 0){ cout << "Using 2 temporary arrays containing " << NOvals << " values." << endl; }
+  if(vb_flag > 0){ cout << "Using temporary array containing " << NOvals << " values." << endl; }
   
   // carry out smoothing by shuffling data along longest axis
   // using the buffer array
@@ -1626,7 +1616,7 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
       buffer_vals = new data_type[(size_x * size_y * bdepth)];
       
       // fill initial buffer values
-      /*for(k = 0; k < (bdepth - 1); ++k){
+      for(k = 0; k < (bdepth - 1); ++k){
 	
 	for(i = 0; i < size_x; ++i){
 	  
@@ -1645,34 +1635,8 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
 	}   
 	
 	// for(k = 0; k < (bdepth - 1); ++k)
-	} */ 
+      }  
       
-      // a. fill initial temp_vals array
-      used = Populate_temp_array(temp_vals,data_vals,i,j,k,size_x,size_y,size_z,sradius,fradius,round_flag);
-      for(i = used; i < NOvals; ++i){ temp_vals[i] = 9.9E30; }
-
-      // b. fill initial temp_XtoI_pos array
-      Populate_temp_XtoI_array(temp_XtoI_pos,i,j,k,size_x,size_y,size_z,sradius,fradius,round_flag);
-
-      // c. fill initial temp_ItoX_pos array
-      Populate_temp_ItoX_array(temp_ItoX_pos,i,j,k,size_x,size_y,size_z,sradius,fradius,round_flag);
-
-
-
-
-
-      // c. sort initial temp_XtoI_pos array according to temp_vals
-      HeapSort_index(used,temp_vals,temp_XtoI_pos - 1);
-
-      // d. sort temp_vals according to temp_vals
-      HeapSort_voxels(used,temp_vals - 1);
-
-      // e. generate initial temp_ItoX_pos array from temp_XtoI_pos
-
-      
-
-
-
       // buffer and shuffle median values
       if(vb_flag > 0){ cout << "0 | |:| | : | |:| | 100% complete" << endl; }
       progress = 0.0;
@@ -1747,8 +1711,6 @@ void MedianSmooth(data_type * data_vals, int size_x, int size_y, int size_z, int
   
   // free up memory 
   delete [] temp_vals;
-  delete [] temp_XtoI_pos;
-  delete [] temp_ItoX_pos;
   delete [] buffer_vals;
   
 }
