@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
-#include <GaussFit_OMP.h>
 
 extern "C" {
 
@@ -91,9 +90,6 @@ int main(int argc, char* argv[]){
 
   int i,j;
   float angle;
-
-  // i. pgplot variables
-  float tr[6] = {0.0,1.0,0.0,0.0,0.0,1.0};
 
   // create Gaussian fitting arrays
   fit_params = new float[7];
@@ -408,9 +404,6 @@ int main(int argc, char* argv[]){
     PrintCatalogueHeader(outputfile,0);
     i = CreateCatalogue(outputfile,detections,NOobj,obj_limit,-1);
     outputfile.close();
-
-    // g. create global plots
-    if(plots_flag == 1){ CreateObjPlots(i,1,output_code,xyz_order,size_x,size_y,1,detections,NOobj,obj_limit,ctype3,crpix3,crval3,cdelt3,restfreq); }
 
     // 13. free memory 
     if(img_vals_1){ delete [] img_vals_1; }

@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
-#include <GaussFit_OMP.h>
 
 extern "C" {
 
