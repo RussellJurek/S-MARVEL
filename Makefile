@@ -126,7 +126,7 @@ $(OBJGEN_DIR)/librjj_objgen_plots.a: $(OBJGEN_DIR)/RJJ_ObjGen_Plots.cpp
 $(OBJGEN_DIR)/librjj_objgen_plots.so: $(OBJGEN_DIR)/RJJ_ObjGen_Plots.cpp 
 	@echo NOT creating dynamic C++ plotting library . . . Couldn\'t find pgplot installation.
 
-src/FindDots_wPlots: src/FindDots_wPlots.cpp $(OBJGEN_DIR)/librjj_objgen_plots.a $(OBJGEN_DIR)/librjj_objgen_plots.so
+bin/FindDots_wPlots: src/FindDots_wPlots.cpp $(OBJGEN_DIR)/librjj_objgen_plots.a $(OBJGEN_DIR)/librjj_objgen_plots.so
 	@echo NOT creating FindDots_wPlots . . . Couldn\'t find pgplot installation.
 
 endif

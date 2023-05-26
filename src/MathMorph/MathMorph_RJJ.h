@@ -2950,7 +2950,7 @@ class kernels_s {
  private:
   vector <int> kernels_s_sizes;
   vector<T_kernel> kernels_s_scale;
-  vector< vector< vector<T_kernel> > > kernels_s;
+  vector< vector< vector<T_kernel> > > kernels_s_mask;
 
  public:
   kernels_s(){ ; }
@@ -2961,7 +2961,7 @@ class kernels_s {
     kernels_s_sizes.push_back(x);
     kernels_s_sizes.push_back(y);
     kernels_s_scale.push_back(0.0);
-    kernels_s.push_back( vector< vector<T_kernel> () > () );
+    kernels_s_mask.push_back( vector< vector<T_kernel> () > () );
 
   }
 

@@ -10,12 +10,10 @@
 
 extern "C" {
 
-#include <cpgplot.h>
 #include <tiffio.h>
 
 }
 #include<RJJ_ObjGen.h>
-#include<RJJ_ObjGen_Plots.h>
 
 using namespace std;
 
