@@ -68,7 +68,7 @@ OBJGEN_OBJECTS = $(OBJGEN_SOURCES:.cpp=.o)
 
 MM_DIR = $(CURR_DIR)/src/MathMorph
 MM_INCLUDES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.h)
-MM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
+eM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
 MM_OBJECTS = $(MM_SOURCES:.cpp=.o)
 
 # define rules used to create BusyFunction library and test programs
