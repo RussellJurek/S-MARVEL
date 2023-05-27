@@ -1,6 +1,7 @@
 # retrieve system architecture
 ARCH := $(shell uname -s)
-$(info Creating S-MARVEL for ARCH = $(ARCH))
+CURR_DIR := $(shell pwd)
+$(info Creating S-MARVEL for ARCH = $(ARCH) at base directory $(CURR_DIR))
 
 # specify compilation options
 CXX = c++
@@ -20,8 +21,10 @@ endif
 # set the library creation method
 ifeq ($(ARCH),Darwin)
   LIB_METHOD = Libtool -static -o
+  DYLIB_TYPE = dylib
 else 
   LIB_METHOD = ar -crus
+  DYLIB_TYPE = so
 endif
 $(info Using static library build mehod, LIB_METHOD = $(LIB_METHOD))
 
@@ -58,12 +61,12 @@ endif
 # 4. Build S-MARVEL - Find dots program
 
 # define sources and includes for each library
-OBJGEN_DIR = src/ObjGen
+OBJGEN_DIR = $(CURR_DIR)/src/ObjGen
 OBJGEN_INCLUDES = $(addprefix $(OBJGEN_DIR)/,RJJ_Objgen.h) 
 OBJGEN_SOURCES = $(addprefix $(OBJGEN_DIR)/,RJJ_ObjGen_DetectDefn.cpp RJJ_ObjGen_CatPrint.cpp RJJ_ObjGen_PlotGlobal.cpp RJJ_ObjGen_CreateObjs.cpp RJJ_ObjGen_ThreshObjs.cpp RJJ_ObjGen_AddObjs.cpp RJJ_ObjGen_MemManage.cpp RJJ_ObjGen_Dmetric.cpp)
 OBJGEN_OBJECTS = $(OBJGEN_SOURCES:.cpp=.o)
 
-MM_DIR = src/MathMorph
+MM_DIR = $(CURR_DIR)/src/MathMorph
 MM_INCLUDES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.h)
 MM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
 MM_OBJECTS = $(MM_SOURCES:.cpp=.o)
@@ -133,13 +136,17 @@ endif
 
 clean:
 	@echo Removing all object files . . . 
-	@rm -vf *.o src/ObjGen/*.o src/MathMorph/*.o
+	@rm -vf src/ObjGen/*.o src/MathMorph/*.o
 
 distclean:
 	@echo Removing all object files, libraries and compiled programs . . . 
-	@rm -vf *.o ObjGen/*.o ObjGen/*.a ObjGen/*.so
+	@rm -vf ObjGen/*.o ObjGen/*.a ObjGen/*.so
 	@rm -vf MathMorph/*.o MathMorph/*.a MathMorph/*.so
 	@rm -vf MMremove_ALL_Tiff_images FindDots FindDots_wPlots
+
+binclean:
+	@echo Removing binaries . . .
+	@rm -vf bin/FindDots bin/FindDots_wPlots bin/MMremove_ALL_Tiff_images
 
 install:
 	@echo Copying libraries and include files to $(INSTALL_DIR) and $(INSTALL_INC) . . .
