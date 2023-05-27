@@ -72,7 +72,7 @@ MM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
 MM_OBJECTS = $(MM_SOURCES:.cpp=.o)
 
 # define rules used to create BusyFunction library and test programs
-all: $(OBJGEN_DIR)/librjj_objgen.a $(OBJGEN_DIR)/librjj_objgen.so $(OBJGEN_DIR)/librjj_objgen_plots.a $(OBJGEN_DIR)/librjj_objgen_plots.so $(MM_DIR)/librjj_MM.a $(MM_DIR)/librjj_MM.so bin/MMremove_ALL_Tiff_images bin/FindDots bin/FindDots_wPlots
+all: libs programs
 
 $(OBJGEN_DIR)/%.o: $(OBJGEN_DIR)/%.cpp 
 	$(CXX) -fPIC $(CXXFLAGS) -I$(OBJGEN_DIR) -c $< -o $@ 
@@ -133,6 +133,10 @@ bin/FindDots_wPlots: src/FindDots_wPlots.cpp $(OBJGEN_DIR)/librjj_objgen_plots.a
 	@echo NOT creating FindDots_wPlots . . . Couldn\'t find pgplot installation.
 
 endif
+
+libs: $(OBJGEN_DIR)/librjj_objgen.a $(OBJGEN_DIR)/librjj_objgen.so $(OBJGEN_DIR)/librjj_objgen_plots.a $(OBJGEN_DIR)/librjj_objgen_plots.so $(MM_DIR)/librjj_MM.a $(MM_DIR)/librjj_MM.so 
+
+programs: bin/MMremove_ALL_Tiff_images bin/FindDots bin/FindDots_wPlots
 
 clean:
 	@echo Removing all object files . . . 
