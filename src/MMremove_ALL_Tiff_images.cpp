@@ -116,24 +116,26 @@ int main(int argc, char* argv[]){
     TIFFGetField(tiff_input,TIFFTAG_IMAGELENGTH,&size_y);
     // 3.c calculate the number of pixels
     npixels = size_x * size_y;
-	// 3.d retrieve the scanline size in Bytes
-	scanline_size = TIFFScanlineSize(tiff_input);
-	cout << "Image has a scanline size of " << scanline_size << " Bytes." << endl;
-	// 3.e retrieve the planar configuration 
-	TIFFGetField(tiff_input,TIFFTAG_PLANARCONFIG,&tiff_config);
-	cout << "Image has planar configuration type, " << tiff_config << endl;
+    // 3.d retrieve the scanline size in Bytes
+    scanline_size = TIFFScanlineSize(tiff_input);
+    cout << "Image has a scanline size of " << scanline_size << " Bytes." << endl;
+    // 3.e retrieve the planar configuration 
+    TIFFGetField(tiff_input,TIFFTAG_PLANARCONFIG,&tiff_config);
+    cout << "Image has planar configuration type, " << tiff_config << endl;
     // 3.f retrieve the bit-depth
     TIFFGetField(tiff_input,TIFFTAG_BITSPERSAMPLE,&tiff_bitdepth);
     cout << "Image has a bit-depth of " << tiff_bitdepth << endl;
+	if(tiff_bitdepth < 8){ tiff_bitdepth = 8; cout << "Anomalously small bit-depth. Setting to new value, " << tiff_bitdepth << endl; }
+	if(tiff_bitdepth > 32){ tiff_bitdepth = 8; cout << "Anomalously large bit-depth. Setting to new value, " << tiff_bitdepth << endl; } 
     // 3.g retrieve the samples per pixel
     TIFFGetField(tiff_input,TIFFTAG_SAMPLESPERPIXEL,&tiff_spp);
     cout << "Image has " << tiff_spp << " samples per pixel." << endl;
     // 3.h retrieve the samples format
     TIFFGetField(tiff_input,TIFFTAG_SAMPLEFORMAT,&tiff_sample_format);
     cout << "Image pixels have a sample format of " << tiff_sample_format << endl;
-	// 3.i retrieve the colouring format
+    // 3.i retrieve the colouring format
     TIFFGetField(tiff_input,TIFFTAG_PHOTOMETRIC,&tiff_colour_format);
-	cout << "Using photometric colur scheme, " << tiff_colour_format << endl;
+    cout << "Using photometric colur scheme, " << tiff_colour_format << endl;
     // 3.i create arrays 
     img_vals_1 = new float[npixels];
     img_vals_2 = new float[npixels];
@@ -290,13 +292,15 @@ int main(int argc, char* argv[]){
 		TIFFSetField(tiff_output,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff_output,size_x*3));
 
     }
- 
+
     tiff_buffer = NULL;
     tiff_buffer = (unsigned char *)_TIFFmalloc(tiff_linebytes);
 
     for(tiff_row = 0; tiff_row < size_y; ++tiff_row){
+
       memcpy(tiff_buffer, &tiff_image_data[tiff_row*tiff_linebytes], tiff_linebytes); 
       if (TIFFWriteScanline(tiff_output,tiff_buffer,tiff_row,0) < 0){ break; }
+
     }
 
     // 17.b close the third output file

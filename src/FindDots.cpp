@@ -208,6 +208,8 @@ int main(int argc, char* argv[]){
     // 3.f retrieve the bit-depth
     TIFFGetField(tiff_input,TIFFTAG_BITSPERSAMPLE,&tiff_bitdepth);
     cout << "Image has a bit-depth of " << tiff_bitdepth << endl;
+	if(tiff_bitdepth < 8){ tiff_bitdepth = 8; cout << "Anomalously small bit-depth. Setting to new value, " << tiff_bitdepth << endl; }
+	if(tiff_bitdepth > 32){ tiff_bitdepth = 8; cout << "Anomalously large bit-depth. Setting to new value, " << tiff_bitdepth << endl; } 
     // 3.g retrieve the samples per pixel
     TIFFGetField(tiff_input,TIFFTAG_SAMPLESPERPIXEL,&tiff_spp);
     cout << "Image has " << tiff_spp << " samples per pixel." << endl;
