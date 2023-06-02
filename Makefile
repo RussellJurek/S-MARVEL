@@ -68,7 +68,7 @@ OBJGEN_OBJECTS = $(OBJGEN_SOURCES:.cpp=.o)
 
 MM_DIR = $(CURR_DIR)/src/MathMorph
 MM_INCLUDES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.h)
-eM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
+MM_SOURCES = $(addprefix $(MM_DIR)/,MathMorph_RJJ.cpp)
 MM_OBJECTS = $(MM_SOURCES:.cpp=.o)
 
 # define rules used to create BusyFunction library and test programs
@@ -79,35 +79,35 @@ $(OBJGEN_DIR)/%.o: $(OBJGEN_DIR)/%.cpp
 
 $(OBJGEN_DIR)/librjj_objgen.a: $(OBJGEN_OBJECTS) 
 	@echo Creating ObjGen C++ static library --- EXCLUDING cfitsio extensions . . . 
-	$(LIB_METHOD) $@ $(OBJGEN_OBJECTS)
+	$(LIB_METHOD) $@ $(OBJGEN_OBJECTS) 
 
 $(OBJGEN_DIR)/librjj_objgen.so: $(OBJGEN_SOURCES)
 	@echo Creating ObjGen C++ shared library --- EXCLUDING cfitsio extensions . . . 
-	$(CXX) -shared -o $@ $(OBJGEN_OBJECTS)
+	$(CXX) -shared -o $@ $(OBJGEN_OBJECTS) $(LDFLAGS)
 
 $(MM_DIR)/%.o: $(MM_DIR)/%.cpp
 	$(CXX) -fPIC $(CXXFLAGS) -I$(MM_DIR) -c $< -o $@ 
 
 $(MM_DIR)/librjj_MM.a: $(MM_OBJECTS)
 	@echo Creating MathMorph C++ static library . . . 
-	$(LIB_METHOD) $@ $(MM_OBJECTS)
+	$(LIB_METHOD) $@ $(MM_OBJECTS) 
 
 $(MM_DIR)/librjj_MM.so: $(MM_OBJECTS)
 	@echo Creating MathMorph C++ dynamic library . . . 
-	$(CXX) -shared -o $@ $(MM_OBJECTS)
+	$(CXX) -shared -o $@ $(MM_OBJECTS) $(LDFLAGS)
 
 bin/MMremove_ALL_Tiff_images: src/MMremove_ALL_Tiff_images.cpp $(MM_DIR)/librjj_MM.a $(MM_DIR)/librjj_MM.so 
 	@echo Creating MM removal program for TIFF images . . . 
-	$(CXX) $(CXXFLAGS) -o $@ $< -I$(MM_DIR) -L$(MM_DIR) -lrjj_MM -ltiff
+	$(CXX) $(CXXFLAGS) -o $@ $< -I$(MM_DIR) -L$(MM_DIR) -lrjj_MM -ltiff $(LDFLAGS)
 
 bin/FindDots: src/FindDots.cpp $(OBJGEN_DIR)/librjj_objgen.a $(OBJGEN_DIR)/librjj_objgen.so
 	@echo Creating FindDots program . . . 
-	$(CXX) $(CXXFLAGS) -o $@ $< -ltiff -I$(OBJGEN_DIR) -L$(OBJGEN_DIR) -lrjj_objgen 
+	$(CXX) $(CXXFLAGS) -o $@ $< -ltiff -I$(OBJGEN_DIR) -L$(OBJGEN_DIR) -lrjj_objgen $(LDFLAGS)
 
 ifneq ($(THIS_PGPLOT_DIR), )
 
 $(OBJGEN_DIR)/RJJ_ObjGen_Plots.o: $(OBJGEN_DIR)/RJJ_ObjGen_Plots.cpp
-	$(CXX) -c $(OBJGEN_DIR)/RJJ_ObjGen_Plots.cpp -o $(OBJGEN_DIR)/RJJ_ObjGen_Plots.o -fPIC $(CXXFLAGS) -I$(OBJGEN_DIR) -I$(THIS_PGPLOT_DIR)/$(THIS_PGPLOT_INC) -L$(OBJGEN_DIR) -lrjj_objgen -L$(THIS_PGPLOT_DIR)/$(THIS_PGPLOT_LIB) -lX11
+	$(CXX) -c $(OBJGEN_DIR)/RJJ_ObjGen_Plots.cpp -o $(OBJGEN_DIR)/RJJ_ObjGen_Plots.o -fPIC $(CXXFLAGS) -I$(OBJGEN_DIR) -I$(THIS_PGPLOT_DIR)/$(THIS_PGPLOT_INC) -L$(OBJGEN_DIR) -lrjj_objgen -L$(THIS_PGPLOT_DIR)/$(THIS_PGPLOT_LIB) -lX11 $(LDFLAGS) 
 
 $(OBJGEN_DIR)/librjj_objgen_plots.a: src/ObjGen/RJJ_ObjGen_Plots.o
 	@echo Creating C++ static plotting library . . .
@@ -119,7 +119,7 @@ $(OBJGEN_DIR)/librjj_objgen_plots.so: src/ObjGen/RJJ_ObjGen_Plots.o
 
 bin/FindDots_wPlots: src/FindDots_wPlots.cpp $(OBJGEN_DIR)/librjj_objgen.a $(OBJGEN_DIR)/librjj_objgen.so $(OBJGEN_DIR)/librjj_objgen_plots.a $(OBJGEN_DIR)/librjj_objgen_plots.so
 	@echo Creating FindDots_wPlots program . . . 
-	$(CXX) $(CXXFLAGS) -o $@ $< -ltiff -I$(OBJGEN_DIR) -L$(OBJGEN_DIR) -lrjj_objgen -lrjj_objgen_plots -lcpgplot -lpgplot -lX11 -lgfortran
+	$(CXX) $(CXXFLAGS) -o $@ $< -ltiff -I$(OBJGEN_DIR) -L$(OBJGEN_DIR) -lrjj_objgen -lrjj_objgen_plots -lcpgplot -lpgplot -lX11 -lgfortran $(LDFLAGS)
 
 else
 
